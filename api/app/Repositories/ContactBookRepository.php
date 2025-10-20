@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\ContactBook;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class ContactBookRepository
 {
@@ -40,5 +42,25 @@ class ContactBookRepository
        $data->save();
 
        return $data;
+   }
+
+    /**
+     * @param int $id
+     * @return bool|null
+     */
+   public function delete(int $id) : ?bool
+   {
+       $data = $this->findByPk($id);
+
+       return $data?->delete();
+   }
+
+    /**
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+   public function getPaginate(int $perPage = 10) : LengthAwarePaginator
+   {
+       return ContactBook::orderBy('contact_name')->paginate($perPage);
    }
 }

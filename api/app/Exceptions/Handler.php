@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +23,12 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (ContactNotFoundException $e, Request $request) {
+            return response()->json([
+                'status' => 'CONTACT_NOT_FOUND',
+                'message' => $e->getMessage(),
+                'data' => [ $e->getMessage() ]
+            ],404);
         });
     }
 }

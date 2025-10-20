@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Exceptions\ContactNotFoundException;
 use App\Models\ContactBook;
 use App\Repositories\ContactBookRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ContactBookService
 {
@@ -26,10 +28,40 @@ class ContactBookService
     /**
      * @param int $id
      * @param array $params
-     * @return ContactBook
+     * @return ContactBook|null
+     * @throws ContactNotFoundException
      */
-    public function update(int $id, array $params) : ContactBook
+    public function update(int $id, array $params) : ?ContactBook
     {
-        return $this->contactBookRepository->update($id, $params);
+        $updated = $this->contactBookRepository->update($id, $params);
+
+        if(!$updated)
+            throw new ContactNotFoundException("Not found contact to update");
+
+        return $updated;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws ContactNotFoundException
+     */
+    public function delete(int $id) : bool
+    {
+        $deleted = $this->contactBookRepository->delete($id);
+
+        if(!$deleted)
+            throw new ContactNotFoundException("Not found contact to update");
+
+        return $deleted;
+    }
+
+    /**
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function listAllPagination(int $perPage) : LengthAwarePaginator
+    {
+        return $this->contactBookRepository->getPaginate($perPage);
     }
 }

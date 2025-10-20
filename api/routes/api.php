@@ -14,6 +14,5 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::post('/contacts', [ContactController::class, 'store']);
+Route::resource('/contacts',ContactController::class);
 

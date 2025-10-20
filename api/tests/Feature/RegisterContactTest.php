@@ -153,4 +153,125 @@ class RegisterContactTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_update_contact_successfully()
+    {
+        $contact = ContactBook::factory()->create();
+
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => '31999999999',
+            'contact_email' => 'adriano.jhone@gmail.com',
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/' . $contact->id, $payload, [
+            'accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'status',
+            'data'
+        ]);
+
+        $response->assertJson([
+            'status' => 'UPDATED',
+        ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_return_contact_not_found_when_update() : void
+    {
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => '31999999999',
+            'contact_email' => 'adriano.jhone@gmail.com',
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/2', $payload, [
+            'accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
+        $response->assertStatus(404);
+
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data'
+        ]);
+
+        $response->assertJson([
+            'status' => 'CONTACT_NOT_FOUND',
+            'message' => 'Not found contact to update',
+            'data' => [
+                'Not found contact to update'
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_delete_contact_successfully() : void
+    {
+        $contact = ContactBook::factory()->create();
+
+        $response = $this->deleteJson('/api/contacts/' . $contact->id, [
+            'accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'status' => 'DELETED',
+            'data' => true
+        ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_list_contacts_with_pagination()
+    {
+        ContactBook::factory()->create(['contact_name' => 'Adriano Oliveira']);
+        ContactBook::factory()->create(['contact_name' => 'Jonas Renner']);
+        ContactBook::factory()->create(['contact_name' => 'Adriele Souza']);
+        ContactBook::factory()->create(['contact_name' => 'Beatriz']);
+
+        $response = $this->getJson('/api/contacts', [
+            'accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment(['contact_name' => 'Adriano Oliveira']);
+        $response->assertJsonFragment(['contact_name' => 'Adriele Souza']);
+        $response->assertJsonFragment(['contact_name' => 'Beatriz']);
+        $response->assertJsonFragment(['contact_name' => 'Jonas Renner']);
+    }
 }
