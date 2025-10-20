@@ -274,4 +274,108 @@ class RegisterContactTest extends TestCase
         $response->assertJsonFragment(['contact_name' => 'Beatriz']);
         $response->assertJsonFragment(['contact_name' => 'Jonas Renner']);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_update_contact_with_same_contact_phone_param()
+    {
+       $contact =  ContactBook::factory()->create(['contact_phone' => '31991841552']);
+
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => '31991841552',
+            'contact_email' => 'adriano.jhone@gmail.com',
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/' . $contact->id, $payload);
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_cannot_update_contact_when_existing_contact_phone_another_contact()
+    {
+        $contactOne =  ContactBook::factory()->create(['contact_phone' => '31991841552']);
+        $contactTwo =  ContactBook::factory()->create(['contact_phone' => '31999855214']);
+
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => $contactTwo->contact_phone,
+            'contact_email' => 'adriano.jhone@gmail.com',
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/' . $contactOne->id, $payload);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['contact_phone']);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_update_contact_with_same_contact_email_param()
+    {
+        $contact =  ContactBook::factory()->create(['contact_email' => 'adriano.oliveira@gmail.com']);
+
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => '31991841552',
+            'contact_email' => 'adriano.oliveira@gmail.com',
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/' . $contact->id, $payload);
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_cannot_update_contact_when_existing_contact_email_another_contact()
+    {
+        $adrianoContact =  ContactBook::factory()->create(['contact_email' => 'adriano.oliveira@gmail.com']);
+        $adrieleContact =  ContactBook::factory()->create(['contact_phone' => 'adriele@outlook.com']);
+
+        $payload = [
+            'contact_name' => 'Adriano Jhone',
+            'contact_phone' => '31999999999',
+            'contact_email' => $adrieleContact->contact_email,
+            'address' => 'Rua Carlos Lacerda',
+            'number' => '941',
+            'neighborhood' => 'Trevo',
+            'city' => 'Belo Horizonte',
+            'state' => 'MG',
+            'postal_code' => '31545170',
+        ];
+
+        $response = $this->putJson('/api/contacts/' . $adrianoContact->id, $payload);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['contact_email']);
+    }
 }

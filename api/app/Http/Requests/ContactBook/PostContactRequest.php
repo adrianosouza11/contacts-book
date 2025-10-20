@@ -17,10 +17,10 @@ class PostContactRequest extends FormRequest
         return [
             'contact_name' => ['required', 'string', 'max:45'],
             'contact_phone' => ['required', 'string', 'max:11',
-                Rule::unique('contact_books','contact_phone')
+                Rule::unique('contact_books','contact_phone')->ignore($this->route('contact'))
             ],
             'contact_email' => ['required', 'email', 'max:155',
-                Rule::unique('contact_books', 'contact_email')
+                Rule::unique('contact_books', 'contact_email')->ignore($this->route('contact'))
             ],
             'address' => ['required', 'string', 'max:255'],
             'number' => ['required', 'string', 'min:1', 'max:45'],
