@@ -56,10 +56,11 @@ class ContactBookRepository
    }
 
     /**
+     * @param array $filter
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-   public function getPaginate(int $perPage = 10) : LengthAwarePaginator
+   public function getPaginate(array $filter,int $perPage = 10) : LengthAwarePaginator
    {
        return ContactBook::orderBy('contact_name')->paginate($perPage);
    }

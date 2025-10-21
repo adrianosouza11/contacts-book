@@ -26,9 +26,7 @@ class ContactController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('perpage', 15);
-
-        $list = $this->contactBookService->listAllPagination($perPage);
+        $list = $this->contactBookService->listAllPagination($request->all());
 
         return response()->json($list);
     }
