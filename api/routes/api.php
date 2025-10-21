@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 Route::resource('/contacts',ContactController::class);
 
+Route::get('/contacts/export/csv', [ContactController::class, 'exportCsv'])->name('contacts.export-csv');

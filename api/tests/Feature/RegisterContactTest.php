@@ -378,4 +378,19 @@ class RegisterContactTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['contact_email']);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_download_csv_contacts()
+    {
+        $response = $this->get('/api/contacts/export/csv');
+
+        $response->assertStatus(200);
+
+        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+
+        $this->assertStringContainsString('attachment', $response->headers->get('Content-Disposition'));
+    }
 }

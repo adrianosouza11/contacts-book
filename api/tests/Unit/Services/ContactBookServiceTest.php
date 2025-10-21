@@ -117,10 +117,10 @@ class ContactBookServiceTest extends TestCase
         $paginator = new LengthAwarePaginator($contacts, 3, 10);
 
         $this->contactBookRepository->shouldReceive('getPaginate')
-            ->with(10)
+            ->with()
             ->andReturn($paginator);
 
-        $result = $this->contactBookService->listAllPagination(10);
+        $result = $this->contactBookService->listAllPagination();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertCount(3, $result->items());

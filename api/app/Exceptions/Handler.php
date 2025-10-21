@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
+use \Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -23,12 +24,23 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->renderable(function (ContactNotFoundException $e, Request $request) {
-            return response()->json([
-                'status' => 'CONTACT_NOT_FOUND',
-                'message' => $e->getMessage(),
-                'data' => [ $e->getMessage() ]
-            ],404);
+        $this->renderable(function (Throwable $e, Request $request) {
+
+            if ($e instanceof ContactNotFoundException) {
+                return response()->json([
+                    'status' => 'CONTACT_NOT_FOUND',
+                    'message' => $e->getMessage(),
+                    'data' => [$e->getMessage()]
+                ], 404);
+            }
+
+            if ($e instanceof ContentPathNotFoundException) {
+                return response()
+                    ->json([
+                        'status' => 'CONTENT_IN_PATH_NOT_FOUND',
+                        'message' => 'Conteudo não está disponível.',
+                    ], 404);
+            }
         });
     }
 }

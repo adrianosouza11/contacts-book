@@ -4,29 +4,39 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\GenerateCsvContactsAction;
 use App\Exceptions\ContactNotFoundException;
+use App\Exceptions\ContentPathNotFoundException;
 use App\Repositories\ContactBookRepository;
+use App\Services\ContactBookExportService;
 use App\Services\ContactBookService;
 use App\Http\Requests\ContactBook\PostContactRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ContactController extends Controller
 {
     private ContactBookService $contactBookService;
+    private ContactBookExportService $contactBookExportService;
 
     public function __construct()
     {
         $this->contactBookService = new ContactBookService(new ContactBookRepository());
+
+        $this->contactBookExportService = new ContactBookExportService(
+            $this->contactBookService,
+            new GenerateCsvContactsAction()
+        );
     }
 
     /**
      * @param Request $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $list = $this->contactBookService->listAllPagination($request->all());
+        $list = $this->contactBookService->listAllPagination();
 
         return response()->json($list);
     }
@@ -73,6 +83,19 @@ class ContactController extends Controller
         return response()->json([
             'status' => 'DELETED',
             'data' => $deleted
+        ]);
+    }
+
+    /**
+     * @return BinaryFileResponse
+     * @throws ContentPathNotFoundException
+     */
+    public function exportCsv() : BinaryFileResponse
+    {
+        $filename = $this->contactBookExportService->exportCsv();
+
+        return $this->contactBookExportService->download($filename, [
+            'Content-Type' => 'text/csv',
         ]);
     }
 }

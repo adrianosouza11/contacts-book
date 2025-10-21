@@ -57,11 +57,10 @@ class ContactBookService
     }
 
     /**
-     * @param array $filter
      * @return LengthAwarePaginator
      */
-    public function listAllPagination(array $filter) : LengthAwarePaginator
+    public function listAllPagination() : LengthAwarePaginator
     {
-        return $this->contactBookRepository->getPaginate($filter);
+        return $this->contactBookRepository->getPaginate();
     }
 }
