@@ -3,7 +3,6 @@ volumes:
 services:
     api:
       build: ./api
-      container_name: contactsbook-api
       volumes:
         - sqlite_db:/var/www/html/database
       ports:
