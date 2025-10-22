@@ -58,5 +58,6 @@ COPY nginx.conf /etc/nginx/sites-available/default
 # Expor as portas para Nginx e PHP-FPM
 EXPOSE 80 9000
 
-# Comando para iniciar o Nginx e PHP-FPM
-CMD service nginx start && php-fpm
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

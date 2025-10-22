@@ -7,12 +7,12 @@ namespace App\Http\Controllers;
 use App\Actions\GenerateCsvContactsAction;
 use App\Exceptions\ContactNotFoundException;
 use App\Exceptions\ContentPathNotFoundException;
+use App\Jobs\SendBackEmailsJob;
 use App\Repositories\ContactBookRepository;
 use App\Services\ContactBookExportService;
 use App\Services\ContactBookService;
 use App\Http\Requests\ContactBook\PostContactRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ContactController extends Controller
@@ -31,7 +31,6 @@ class ContactController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
      */
     public function index(): JsonResponse
@@ -48,6 +47,8 @@ class ContactController extends Controller
     public function store(PostContactRequest $request) : JsonResponse
     {
         $stored = $this->contactBookService->store($request->validated());
+
+        SendBackEmailsJob::dispatch($stored)->onQueue('back_emails');
 
         return response()->json([
             "status" => 'CREATED',
