@@ -3,11 +3,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
     {
         path: '/',
-        redirect: '/main'
+        redirect: '/contacts'
     },
     {
-        path: '/main',
-        name: 'MainPage',
+        path: '/contacts',
+        name: 'ContactListPage',
         component: () => import('@/pages/ContactListPage.vue'),
     },
     {

@@ -6,7 +6,7 @@
 
     <div class="w-full">
       <div class="flex justify-start mb-4">
-        <button class="bg-green-500 text-white px-4 py-2 hover:bg-green-600 rounded-full">Adicionar </button>
+        <button class="bg-green-500 text-white px-4 py-2 hover:bg-green-600 rounded-full" @click="router.push('/contacts/create')">Adicionar </button>
       </div>
     </div>
 
@@ -80,6 +80,7 @@
   import { formatToBR } from '@/utils/date';
   import { PencilIcon, PlusIcon } from 'lucide-vue-next';
   import { formattedPhone } from '@/utils/helpers';
+import router from '@/router';
 
   const { data, meta, fetchData } = useReportData('http://localhost:8000/api/contacts');
 
