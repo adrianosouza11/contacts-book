@@ -6,5 +6,7 @@ service nginx start
 # Inicia o PHP-FPM em background
 php-fpm &
 
+php artisan migrate &
+
 # Inicia o worker da fila back_emails
 php artisan queue:work --queue=back_emails

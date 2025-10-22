@@ -32,34 +32,28 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 
 WORKDIR /var/www/html
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 COPY . .
-
-RUN touch database/database.sqlite
 
 # Limpar diretórios específicos do Laravel
 RUN rm -rf /var/www/html/storage/* /var/www/html/bootstrap/cache/*
+
+# Instalar composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Gera a chave da aplicação Laravel (se ainda não tiver uma)
+#RUN php artisan key:generate
 
 # Define permissões para o Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html
 
-RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/app/public
-
 # Define permissão para cache e storage (redundante com a linha acima, mas mantido para clareza)
 RUN chown -R www-data:www-data /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage/framework
-
-RUN composer install
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 COPY nginx.conf /etc/nginx/sites-available/default
-
-# Gera a chave da aplicação Laravel
-RUN php artisan key:generate
 
 # Expor as portas para Nginx e PHP-FPM
 EXPOSE 80 9000

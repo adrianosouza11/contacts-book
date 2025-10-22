@@ -1,8 +1,10 @@
+volumes:
+  sqlite_db:
 services:
     api:
       build: ./api
+      container_name: contactsbook-api
       volumes:
-        - ./api:/var/www/html
-        - ./api/vendor:/var/www/html/vendor
+        - sqlite_db:/var/www/html/database
       ports:
         - 8000:80
