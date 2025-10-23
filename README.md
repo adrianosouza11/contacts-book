@@ -42,7 +42,7 @@ NOTIFICATION_MAIL=
 
 ---
 
-### 2. Configuração opcional
+### 2. Configuração opcional frontend (web/.env)
 
 Caso queira indicar explicitamente onde a API está respondendo (por exemplo, para uso no frontend), você pode definir a variável de ambiente `VITE_API_URL`.  
 
