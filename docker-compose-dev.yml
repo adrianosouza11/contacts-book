@@ -1,7 +1,9 @@
 services:
     api:
-      build: ./api
-      image: Dockerfile.dev
+      build:
+        context: ./api
+        dockerfile: Dockerfile.dev
+      container_name: contactbook-api-dev
       volumes:
         - ./api:/var/www/html
         - ./api/vendor:/var/www/html/vendor

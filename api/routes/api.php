@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\ContactController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AddressSearchController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::resource('/contacts',ContactController::class);
 
 Route::get('/contacts/export/csv', [ContactController::class, 'exportCsv'])->name('contacts.export-csv');
+
+Route::get('/address-search/{postal_code}', [AddressSearchController::class, 'searchAddressByPostalCode']);
