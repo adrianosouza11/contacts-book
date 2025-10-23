@@ -8,6 +8,7 @@ use App\Actions\GenerateCsvContactsAction;
 use App\Exceptions\ContactNotFoundException;
 use App\Exceptions\ContentPathNotFoundException;
 use App\Jobs\SendBackEmailsJob;
+use App\Models\ContactBook;
 use App\Repositories\ContactBookRepository;
 use App\Services\ContactBookExportService;
 use App\Services\ContactBookService;
@@ -97,6 +98,16 @@ class ContactController extends Controller
 
         return $this->contactBookExportService->download($filename, [
             'Content-Type' => 'text/csv',
+        ]);
+    }
+
+    public function show(int $contact): JsonResponse
+    {
+        $data = $this->contactBookService->findByPk($contact);
+
+        return response()->json([
+            'status' => 'GET_CONTACT_SUCCESS',
+            'data' => $data
         ]);
     }
 }

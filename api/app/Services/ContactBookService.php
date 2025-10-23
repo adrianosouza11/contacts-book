@@ -63,4 +63,19 @@ class ContactBookService
     {
         return $this->contactBookRepository->getPaginate();
     }
+
+    /**
+     * @param int $id
+     * @return ContactBook
+     * @throws ContactNotFoundException
+     */
+    public function findByPk(int $id) : ContactBook
+    {
+        $contact =  $this->contactBookRepository->findByPk($id);
+
+        if (!$contact)
+            throw new ContactNotFoundException("Not found contact");
+
+        return $contact;
+    }
 }
