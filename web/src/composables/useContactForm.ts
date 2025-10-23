@@ -3,6 +3,7 @@ import { useLoading } from "./useLoading";
 import { storeContact } from "@/services/contactService";
 import router from "@/router";
 import { useNotification } from "./useNotification";
+import { fetchCep } from "@/services/fetchCepService";
 
 export interface ContactFormType {
     id?: number;
@@ -17,11 +18,9 @@ export interface ContactFormType {
     postal_code: string;
 }
 
-const CEP_REGEX = /^\d{5}-\d{3}$/;
-
 export function useContactForm(initialValues: ContactFormType) {
     const {  loadingStart, loadingStop  } = useLoading();
-    const { toastSuccess } = useNotification();
+    const { toastSuccess, toastError } = useNotification();
 
     const isEditing = computed( () => !!initialValues.id );
 
@@ -40,43 +39,74 @@ export function useContactForm(initialValues: ContactFormType) {
 
     const submittedData = ref<ContactFormType | null>(null);
 
-    const handleSubmit = () => {
+    async function handleSubmit() {
         loadingStart();
 
-        if(isEditing.value) {
-            console.log("Editing existing contact with ID:", initialValues.id);
-        } else {
-            submitStore(formData);
-        }
-
+        await submitStore(formData);
+        
         submittedData.value = { ...formData };
-
-        loadingStop();
     }
 
-    async function submitStore(formData: ContactFormType ) {
+    async function submitStore(formData: ContactFormType ) : Promise<boolean>
+    {
         loadingStart();
+        
+        const phoneNumberCleaned = formData.contact_phone.replace(/\D/g, '');
+        const postalCodeCleaned = formData.postal_code.replace(/\D/g, '');
 
         try {
-            await storeContact(formData);
+            await storeContact({
+                ...formData,
+                contact_phone: phoneNumberCleaned,
+                postal_code: postalCodeCleaned
+            });
+            
+            toastSuccess('Contato cadastrado com sucesso!');
+
+            router.push({ name: 'ContactListPage' });
+
+            return true;
         } catch (error) {
-            console.error("Error storing contact:", error);
+            toastError("Ocorreu um erro ao salvar o contato.");
         } finally {
             loadingStop();
-        } 
+        }
 
-        toastSuccess('Contato cadastrado com sucesso!');
-
-        return router.push({ name: 'ContactListPage' });
+        return false;
     }
 
     const postalCodeError = ref<string>('');
     const isSearchingCep = ref<boolean>(false);
 
     async function handleCepChange() {
-        if(!formData.postal_code && !CEP_REGEX.test(formData.postal_code)) {
+
+        if (formData.postal_code.length < 9) {
             postalCodeError.value = 'Formato de CEP inválido.';
             return;
+        }
+
+        loadingStart();
+
+        isSearchingCep.value = true;
+
+        try {
+            const addressData = await fetchCep(formData.postal_code);
+            
+            if(addressData.data.data){
+                formData.address = addressData.data.data.street || '';
+                formData.neighborhood = addressData.data.data.neighborhood || '';
+                formData.city = addressData.data.data.city || '';
+                formData.state = addressData.data.data.state || '';
+                postalCodeError.value = '';
+            } else {
+                postalCodeError.value = 'CEP não encontrado.';
+            }
+
+        } catch (error) {
+            postalCodeError.value = 'Erro ao buscar o CEP.';
+        } finally {
+            loadingStop();
+            isSearchingCep.value = false;
         }
     }
 
@@ -84,6 +114,8 @@ export function useContactForm(initialValues: ContactFormType) {
         formData,
         isEditing,
         handleSubmit,
-        submittedData
+        submittedData,
+        handleCepChange,
+        isSearchingCep
     }
 } 

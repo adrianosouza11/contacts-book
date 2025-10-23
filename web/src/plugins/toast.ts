@@ -1,9 +1,9 @@
-import Toast, { type PluginOptions } from 'vue-toastification';
+import Toast, { type PluginOptions, POSITION } from 'vue-toastification';
 import type { App } from 'vue';
 import 'vue-toastification/dist/index.css';
 
 const options: PluginOptions = {
-  position: 'top-center',
+  position: POSITION.TOP_CENTER,
   timeout: 3000,
   closeOnClick: true,
   pauseOnHover: true,

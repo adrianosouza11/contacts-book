@@ -1,15 +1,23 @@
 import axios from "axios";
 
-export interface HttpFetchCepResponse {
+export interface AddressSearchResult {
     cep: string;
-    logradouro: string;
-    localidade: string;
-    uf: string;
-    bairro: string;
+    street: string;
+    city: string;
+    state: string;
+    neighborhood: string;
 }
 
-export function fetchCep(cep: string) {
-    const cleanedCep = cep.replace(/\D/g, '');
 
-    return axios.get<HttpFetchCepResponse>(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+export interface HttpFetchCepSuccessResponse {
+  status: number
+  data: AddressSearchResult
+}
+
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
+export function fetchCep(postalCode: string) {
+    const cleanedCep = postalCode.replace(/\D/g, '');
+
+    return axios.get<HttpFetchCepSuccessResponse>( apiUrl + `/address-search/${cleanedCep}`);
 }

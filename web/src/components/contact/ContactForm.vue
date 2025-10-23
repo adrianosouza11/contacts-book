@@ -70,6 +70,8 @@
                 placeholder="00000-000"
                 v-model="formData.postal_code"
                 v-maska="'#####-###'"
+                @blur="handleCepChange"
+                :disabled="isSearchingCep"
               />
             </div>
         </div>
@@ -220,5 +222,9 @@
     },
   });
 
-  const { formData, handleSubmit, isEditing, submittedData } = useContactForm(props.initialValues);
+  const { 
+    formData, 
+    handleSubmit, 
+    isEditing, 
+    submittedData, isSearchingCep, handleCepChange } = useContactForm(props.initialValues);
 </script>
