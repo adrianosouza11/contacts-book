@@ -1,21 +1,23 @@
-# Etapa base: imagem Node oficial
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
-# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos de dependência
-COPY package.json ./
-COPY package-lock.json ./
+COPY package.json package-lock.json ./
 
-# Instala as dependências
-RUN npm install
+RUN npm install --only=production
 
-# Copia todo o restante do projeto
 COPY . .
 
-# Expõe a porta padrão do Vite
-EXPOSE 5173
+RUN npm run build
 
-# Inicia o Vite em modo desenvolvimento
-CMD ["npm", "run", "dev", "--", "--host"]
+FROM nginx:stable-alpine AS production
+
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

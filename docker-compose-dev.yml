@@ -9,3 +9,7 @@ services:
         - ./api/vendor:/var/www/html/vendor
       ports:
         - 8000:80
+    web:
+      build: ./web
+      ports:
+        - 8080:80
