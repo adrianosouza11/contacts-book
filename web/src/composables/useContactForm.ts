@@ -1,6 +1,6 @@
 import { reactive, ref, computed } from "vue";
 import { useLoading } from "./useLoading";
-import { storeContact } from "@/services/contactService";
+import { storeContact,updateContact } from "@/services/contactService";
 import router from "@/router";
 import { useNotification } from "./useNotification";
 import { fetchCep } from "@/services/fetchCepService";
@@ -42,26 +42,62 @@ export function useContactForm(initialValues: ContactFormType) {
     async function handleSubmit() {
         loadingStart();
 
-        await submitStore(formData);
-        
-        submittedData.value = { ...formData };
-    }
-
-    async function submitStore(formData: ContactFormType ) : Promise<boolean>
-    {
-        loadingStart();
-        
         const phoneNumberCleaned = formData.contact_phone.replace(/\D/g, '');
         const postalCodeCleaned = formData.postal_code.replace(/\D/g, '');
-
-        try {
-            await storeContact({
+    
+        if(!isEditing.value)
+            await submitStore({
                 ...formData,
                 contact_phone: phoneNumberCleaned,
                 postal_code: postalCodeCleaned
             });
+        else
+            await submitUpdate({
+                ...formData,
+                contact_phone: phoneNumberCleaned,
+                postal_code: postalCodeCleaned
+            });
+        
+        submittedData.value = { ...formData };
+    }
+
+    /**
+     * @param formData 
+     * @returns Promise<boolean>
+     */
+    async function submitStore(formData: ContactFormType ) : Promise<boolean>
+    {
+        loadingStart();
+    
+        try {
+            await storeContact(formData);
             
             toastSuccess('Contato cadastrado com sucesso!');
+
+            router.push({ name: 'ContactListPage' });
+
+            return true;
+        } catch (error) {
+            toastError("Ocorreu um erro ao salvar o contato.");
+        } finally {
+            loadingStop();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param formData 
+     * @returns Promise<boolean>
+     */
+    async function submitUpdate(formData: ContactFormType ) : Promise<boolean>
+    {
+        loadingStart();
+
+        try {
+            await updateContact(formData);
+            
+            toastSuccess('Contato atualizado com sucesso!');
 
             router.push({ name: 'ContactListPage' });
 

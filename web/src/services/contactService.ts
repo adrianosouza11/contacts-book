@@ -51,8 +51,27 @@ export function fetchListContacts(page: number = 1) {
   });
 }
 
-export function fetchContactById(id: number) {
-  return axios.get<ContactType>(apiUrl + `/contacts/${id}`,{
+export function fetchContactById(id: number) 
+{
+  return axios.get<ContactType|null>(apiUrl + `/contacts/${id}`,{
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
+export async function updateContact(form: ContactType) {
+  return axios.put<HttpResponseContactStored>(apiUrl + '/contacts/' + form.id,form,{
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
+export async function deleteContact(id: number) {
+  return axios.delete<{ status: string, data: boolean }>(apiUrl + '/contacts/' + id,{
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'

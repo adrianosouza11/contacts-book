@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { useLoading } from '@/composables/useLoading';
-import { fetchListContacts, type ContactType, type HttpPaginationResponse } from '@/services/contactService';
+import { deleteContact, fetchListContacts, type ContactType, type HttpPaginationResponse } from '@/services/contactService';
+import { useNotification } from '@/composables/useNotification';
 
 export function useTableData() {
   const pagination = ref<HttpPaginationResponse>({
@@ -13,6 +14,7 @@ export function useTableData() {
   });
 
   const {  loadingStart, loadingStop  } = useLoading();
+  const { toastSuccess, toastError } = useNotification();
 
   async function fetchData(page: number = 1) {
     loadingStart();
@@ -28,8 +30,23 @@ export function useTableData() {
     }
   }
 
+  async function deleteContactById(id: number) {
+    loadingStart();
+
+    try {
+      await deleteContact(id);
+
+      toastSuccess('Contato apagado com sucesso.');
+    } catch (error) {
+      toastError('Ocorreu um erro ao tentar apagar contato.');
+    } finally { 
+      loadingStop();
+    }
+  }
+
   return {
     pagination,
     fetchData,
+    deleteContactById
   }
 }

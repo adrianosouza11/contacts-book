@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { type HttpPaginationResponse, type ContactType } from '@/services/contactService';
 import { useTableData } from '@/composables/useTableData';
 
+const { fetchData, pagination, deleteContactById } = useTableData();
 
 export const useContactListStore = defineStore('contact-list', {
   state: () => <HttpPaginationResponse> ({
@@ -19,22 +20,26 @@ export const useContactListStore = defineStore('contact-list', {
   },
   actions: {
     async loadContacts(page: number = 1) {
-       const pagination = await this.fetchFromApi(page);
+      const pagination = await this.fetchFromApi(page);
 
-        this.current_page = pagination.current_page;
-        this.last_page = pagination.last_page;
-        this.per_page = pagination.per_page;
-        this.total = pagination.total;
-        this.links = pagination.links;
-        this.data = pagination.data;
+      this.current_page = pagination.current_page;
+      this.last_page = pagination.last_page;
+      this.per_page = pagination.per_page;
+      this.total = pagination.total;
+      this.links = pagination.links;
+      this.data = pagination.data;
     },
 
     async fetchFromApi(page: number = 1) {
-        const { fetchData, pagination } = useTableData();
-        
-        await fetchData(page);
+      await fetchData(page);
 
-        return { ...pagination.value }
+      return { ...pagination.value }
+    },
+
+    async deleteContactById(id: number) {
+      await deleteContactById(id);
+
+      this.loadContacts(this.current_page);
     }
   }
 });

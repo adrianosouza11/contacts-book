@@ -54,7 +54,8 @@
             {{ row.created_at ? formatToBR(row.created_at) : '' }}
           </td>
           <td class="px-4 py-3 border-b text-center">
-            <PencilIcon @click.stop="emit('row-details')" class="w-5 h-5 text-blue-500 hover:text-blue-700 inline" />
+            <PencilIcon @click.stop="handleEdit(row.id!)" class="w-5 h-5 text-blue-500 hover:text-blue-700 inline" />
+            <EraserIcon @click="handleDelete(row.id!)" class="w-5 h-5 text-red-500 hover:text-red-700 inline ml-4" />
           </td>
         </tr>
         </tbody>
@@ -81,7 +82,7 @@
   import { onMounted,defineEmits } from 'vue';
   
   import { formatToBR } from '@/utils/date';
-  import { PencilIcon } from 'lucide-vue-next';
+  import { PencilIcon, EraserIcon } from 'lucide-vue-next';
   import { formattedPhone } from '@/utils/helpers';
   import router from '@/router';
   import { useContactListStore } from '@/stores/contactListStore';
@@ -89,12 +90,17 @@
   const store = useContactListStore();
 
   onMounted(() => {
-      if (!store.data.length){
-        store.loadContacts();
-      }
+      store.loadContacts();
   });
 
-  const emit = defineEmits(['row-details']);
+  function handleEdit(rowId: number) {
+    router.push({ name: 'ContactEditPage', params: { id: rowId } });
+  }
+
+  function handleDelete(rowId: number) {
+    store.deleteContactById(rowId);
+  }
+  
 </script>
 
 <style scoped>
