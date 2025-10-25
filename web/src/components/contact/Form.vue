@@ -1,4 +1,18 @@
 <template>
+    <nav class="grid grid-cols-4 font-medium p-2" aria-label="breadcrumb">
+      <div></div>
+      <ol class="flex items-center space-x-2">
+        <li>
+          <a href="/contacts" class="text-blue-600 hover:text-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L4.414 9H14a1 1 0 110 2H4.414l5.293 5.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+            
+          </a>
+        </li>
+        <li>
+          <a href="/contacts" class="text-blue-600 hover:text-blue-800">Voltar para lista de contatos</a>
+        </li>
+      </ol>
+    </nav>
     <div class="min-h-screen flex items-center justify-center bg-gray-100">
       <div class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">

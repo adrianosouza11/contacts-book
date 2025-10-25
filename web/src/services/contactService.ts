@@ -78,3 +78,13 @@ export async function deleteContact(id: number) {
     }
   });
 }
+
+export async function downloadContactsReport() {
+  return axios.get(apiUrl + '/contacts/export/csv', {
+    responseType: 'arraybuffer',
+    headers: {
+      Accept: 'text/csv',
+      'Content-Type': 'application/json'
+    }
+  })
+}

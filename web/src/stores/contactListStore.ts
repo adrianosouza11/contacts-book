@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { type HttpPaginationResponse, type ContactType } from '@/services/contactService';
 import { useTableData } from '@/composables/useTableData';
 
-const { fetchData, pagination, deleteContactById } = useTableData();
+const { fetchData, pagination, deleteContactById, downloadReport } = useTableData();
 
 export const useContactListStore = defineStore('contact-list', {
   state: () => <HttpPaginationResponse> ({
@@ -40,6 +40,10 @@ export const useContactListStore = defineStore('contact-list', {
       await deleteContactById(id);
 
       this.loadContacts(this.current_page);
+    },
+
+    async downloadReport() {
+      await downloadReport();
     }
   }
 });

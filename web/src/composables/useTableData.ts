@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { useLoading } from '@/composables/useLoading';
-import { deleteContact, fetchListContacts, type ContactType, type HttpPaginationResponse } from '@/services/contactService';
+import { deleteContact, fetchListContacts, type ContactType, type HttpPaginationResponse, downloadContactsReport } from '@/services/contactService';
 import { useNotification } from '@/composables/useNotification';
 
 export function useTableData() {
@@ -44,9 +44,32 @@ export function useTableData() {
     }
   }
 
+  async function downloadReport() {
+    loadingStart();
+
+    try {
+      const res = await downloadContactsReport();
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.setAttribute('download', 'report.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toastError('Ocorreu um erro ao tentar fazer download.');
+    } finally { 
+      loadingStop();
+    }
+  }
+
   return {
     pagination,
     fetchData,
-    deleteContactById
+    deleteContactById,
+    downloadReport
   }
 }
