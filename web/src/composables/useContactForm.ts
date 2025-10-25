@@ -39,8 +39,15 @@ export function useContactForm(initialValues: ContactFormType) {
 
     const submittedData = ref<ContactFormType | null>(null);
 
+    const formErrors = ref<Record<string, string[]>>();
+    
+    /**
+     * @returns void
+     */
     async function handleSubmit() {
         loadingStart();
+
+        formErrors.value = {};
 
         const phoneNumberCleaned = formData.contact_phone.replace(/\D/g, '');
         const postalCodeCleaned = formData.postal_code.replace(/\D/g, '');
@@ -77,8 +84,15 @@ export function useContactForm(initialValues: ContactFormType) {
             router.push({ name: 'ContactListPage' });
 
             return true;
-        } catch (error) {
-            toastError("Ocorreu um erro ao salvar o contato.");
+        } catch (error: any) {
+            if (error.response && error.response.status === 422) {
+                formErrors.value = error.response.data.errors;
+                toastError("Por favor, corrija os erros no formulário.");
+            } else {
+                toastError("Ocorreu um erro interno salvar o contato.");
+            }
+
+            
         } finally {
             loadingStop();
         }
@@ -102,8 +116,13 @@ export function useContactForm(initialValues: ContactFormType) {
             router.push({ name: 'ContactListPage' });
 
             return true;
-        } catch (error) {
-            toastError("Ocorreu um erro ao salvar o contato.");
+        } catch (error: any) {
+            if (error.response && error.response.status === 422) {
+                formErrors.value = error.response.data.errors;
+                toastError("Por favor, corrija os erros no formulário.");
+            } else {
+                toastError("Ocorreu um erro interno salvar o contato.");
+            }
         } finally {
             loadingStop();
         }
@@ -111,13 +130,13 @@ export function useContactForm(initialValues: ContactFormType) {
         return false;
     }
 
-    const postalCodeError = ref<string>('');
     const isSearchingCep = ref<boolean>(false);
 
     async function handleCepChange() {
+        formErrors.value = {};
 
         if (formData.postal_code.length < 9) {
-            postalCodeError.value = 'Formato de CEP inválido.';
+            formErrors.value = { postal_code: ['Formato de CEP inválido.'] };
             return;
         }
 
@@ -133,13 +152,17 @@ export function useContactForm(initialValues: ContactFormType) {
                 formData.neighborhood = addressData.data.data.neighborhood || '';
                 formData.city = addressData.data.data.city || '';
                 formData.state = addressData.data.data.state || '';
-                postalCodeError.value = '';
             } else {
-                postalCodeError.value = 'CEP não encontrado.';
+                formErrors.value = { postal_code: ['CEP não encontrado.'] };
             }
 
-        } catch (error) {
-            postalCodeError.value = 'Erro ao buscar o CEP.';
+        } catch (error: any) {
+            if (error.response && error.response.status === 422) {
+                formErrors.value = error.response.data.errors;
+                toastError("Por favor, corrija os erros no formulário.");
+            } else {
+                toastError("Ocorreu um erro interno salvar o contato.");
+            }
         } finally {
             loadingStop();
             isSearchingCep.value = false;
@@ -152,6 +175,7 @@ export function useContactForm(initialValues: ContactFormType) {
         handleSubmit,
         submittedData,
         handleCepChange,
-        isSearchingCep
+        isSearchingCep,
+        formErrors
     }
 } 

@@ -34,9 +34,11 @@
               required
               v-model="formData.contact_name"
             />
+            <span class="text-red-600" v-if="formErrors?.contact_name">{{ formErrors?.contact_name[0] }}</span>
+
+
           </div>
 
-          <!-- Telefone e E-mail -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">
@@ -52,6 +54,7 @@
                 v-model="formData.contact_phone"
                 v-maska="'(##) #####-####'"
               />
+              <span class="text-red-600" v-if="formErrors?.contact_phone">{{ formErrors?.contact_phone[0] }}</span>
             </div>
 
             <div>
@@ -67,6 +70,7 @@
                 required
                 v-model="formData.contact_email"
               />
+              <span class="text-red-600" v-if="formErrors?.contact_email">{{ formErrors?.contact_email[0] }}</span>
             </div>
           </div>
 
@@ -87,6 +91,7 @@
                     @blur="handleCepChange"
                     :disabled="isSearchingCep"
                   />
+                  <span class="text-red-600" v-if="formErrors?.postal_code">{{ formErrors?.postal_code[0] }}</span>
                 </div>
             </div>
 
@@ -107,6 +112,7 @@
                 required
                 v-model="formData.address"
               />
+              <span class="text-red-600" v-if="formErrors?.address">{{ formErrors?.address[0] }}</span>
             </div>
 
             
@@ -127,6 +133,7 @@
                 required
                 v-model="formData.number"
               />
+              <span class="text-red-600" v-if="formErrors?.number">{{ formErrors?.number[0] }}</span>
             </div>
 
             <div>
@@ -142,6 +149,7 @@
                 required
                 v-model="formData.neighborhood"
               />
+              <span class="text-red-600" v-if="formErrors?.neighborhood">{{ formErrors?.neighborhood[0] }}</span>
             </div>
 
             
@@ -162,6 +170,7 @@
                 required
                 v-model="formData.city"
               />
+              <span class="text-red-600" v-if="formErrors?.city">{{ formErrors?.city[0] }}</span>
             </div>
 
             <div>
@@ -198,7 +207,9 @@
                 <option value="SE">Sergipe</option>
                 <option value="TO">Tocantins</option>
               </select>
+              <span class="text-red-600" v-if="formErrors?.state">{{ formErrors?.state[0] }}</span>
             </div>
+            
           </div>
 
           <!-- Botão -->
@@ -240,5 +251,5 @@
     formData, 
     handleSubmit, 
     isEditing, 
-    submittedData, isSearchingCep, handleCepChange } = useContactForm(props.initialValues);
+    submittedData, isSearchingCep, handleCepChange, formErrors } = useContactForm(props.initialValues);
 </script>
