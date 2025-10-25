@@ -1,5 +1,5 @@
 <template>
-    <nav class="grid grid-cols-4 font-medium p-2" aria-label="breadcrumb">
+    <nav class="grid font-medium p-2" aria-label="breadcrumb">
       <div></div>
       <ol class="flex items-center space-x-2">
         <li>
@@ -13,7 +13,7 @@
         </li>
       </ol>
     </nav>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="flex items-center justify-center bg-gray-100">
       <div class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Dados de Contato e Endereço
