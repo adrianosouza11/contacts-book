@@ -13,7 +13,12 @@ const routes = [
     {
         path: '/contacts/create',
         name: 'ContactCreatePage',
-        component: () => import('@/pages/ContactPage.vue'),
+        component: () => import('@/pages/ContactCreatePage.vue'),
+    },
+    {
+        path: '/contacts/edit/:id',
+        name: 'ContactEditPage',
+        component: () => import('@/pages/ContactEditPage.vue'),
     },
     {
         path: '/:pathMatch(.*)*',

@@ -1,6 +1,6 @@
 <template>
   <header class="h-16 text-white bg-[#26313c] border-b px-6 flex items-center justify-between">
-    <h1 class="text-lg font-semibold"></h1>
+    <h1 class="text-lg font-semibold">Contacts Book</h1>
   </header>
 </template>
 
