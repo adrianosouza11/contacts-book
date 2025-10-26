@@ -1,7 +1,9 @@
 import { ref } from 'vue';
 import { useLoading } from '@/composables/useLoading';
-import { deleteContact, fetchListContacts, type ContactType, type HttpPaginationResponse, downloadContactsReport } from '@/services/contactService';
+import { deleteContact, fetchListContacts, type ContactType, type HttpPaginationResponse, downloadContactsReport, fetchContactById } from '@/services/contactService';
 import { useNotification } from '@/composables/useNotification';
+import { useI18n } from 'vue-i18n';
+import { useLanguageStore } from '@/stores/languageStore';
 
 export function useTableData() {
   const pagination = ref<HttpPaginationResponse>({
@@ -15,6 +17,10 @@ export function useTableData() {
 
   const {  loadingStart, loadingStop  } = useLoading();
   const { toastSuccess, toastError } = useNotification();
+
+  const { t } = useI18n();
+  const languageStore = useLanguageStore();
+  languageStore.loadLanguage();
 
   async function fetchData(page: number = 1) {
     loadingStart();
@@ -36,7 +42,9 @@ export function useTableData() {
     try {
       await deleteContact(id);
 
-      toastSuccess('Contato apagado com sucesso.');
+      fetchData(pagination.value.current_page);
+
+      toastSuccess(t('contactListPage.toastDeletedSuccessful'));
     } catch (error) {
       toastError('Ocorreu um erro ao tentar apagar contato.');
     } finally { 
@@ -60,16 +68,36 @@ export function useTableData() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      toastError('Ocorreu um erro ao tentar fazer download.');
+      toastError(t('app.toastInternalError'));
     } finally { 
       loadingStop();
     }
+  }
+
+  /**
+   * @param id 
+   * @returns Promise<ContactType|null>
+   */
+  async function findContactById(id: number) : Promise<ContactType|null> 
+  {
+    loadingStart();
+
+    try {
+      return (await fetchContactById(id)).data.data;
+    } catch (error) {
+      toastError(t('app.toastInternalError'));
+    } finally { 
+      loadingStop();
+    }
+    
+    return null;
   }
 
   return {
     pagination,
     fetchData,
     deleteContactById,
-    downloadReport
+    downloadReport,
+    findContactById
   }
 }

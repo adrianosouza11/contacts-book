@@ -4,6 +4,8 @@ import { storeContact,updateContact } from "@/services/contactService";
 import router from "@/router";
 import { useNotification } from "./useNotification";
 import { fetchCep } from "@/services/fetchCepService";
+import { useI18n } from "vue-i18n";
+import { useLanguageStore } from "@/stores/languageStore";
 
 export interface ContactFormType {
     id?: number;
@@ -21,6 +23,10 @@ export interface ContactFormType {
 export function useContactForm(initialValues: ContactFormType) {
     const {  loadingStart, loadingStop  } = useLoading();
     const { toastSuccess, toastError } = useNotification();
+
+    const { t } = useI18n();
+    const languageStore = useLanguageStore();
+    languageStore.loadLanguage();
 
     const isEditing = computed( () => !!initialValues.id );
 
@@ -79,7 +85,7 @@ export function useContactForm(initialValues: ContactFormType) {
         try {
             await storeContact(formData);
             
-            toastSuccess('Contato cadastrado com sucesso!');
+            toastSuccess(t('contactFormPage.toastStoreSuccessful'));
 
             router.push({ name: 'ContactListPage' });
 
@@ -87,9 +93,9 @@ export function useContactForm(initialValues: ContactFormType) {
         } catch (error: any) {
             if (error.response && error.response.status === 422) {
                 formErrors.value = error.response.data.errors;
-                toastError("Por favor, corrija os erros no formulário.");
+                toastError(t('contactFormPage.toastFormValidationError'));
             } else {
-                toastError("Ocorreu um erro interno salvar o contato.");
+                toastError(t('contactFormPage.toastInternalError'));
             }
 
             
@@ -111,7 +117,7 @@ export function useContactForm(initialValues: ContactFormType) {
         try {
             await updateContact(formData);
             
-            toastSuccess('Contato atualizado com sucesso!');
+            toastSuccess(t('contactFormPage.toastUpdateSuccessful'));
 
             router.push({ name: 'ContactListPage' });
 
@@ -119,9 +125,9 @@ export function useContactForm(initialValues: ContactFormType) {
         } catch (error: any) {
             if (error.response && error.response.status === 422) {
                 formErrors.value = error.response.data.errors;
-                toastError("Por favor, corrija os erros no formulário.");
+                toastError(t('contactFormPage.toastFormValidationError'));
             } else {
-                toastError("Ocorreu um erro interno salvar o contato.");
+                toastError(t('app.toastInternalError'));
             }
         } finally {
             loadingStop();
@@ -159,9 +165,9 @@ export function useContactForm(initialValues: ContactFormType) {
         } catch (error: any) {
             if (error.response && error.response.status === 422) {
                 formErrors.value = error.response.data.errors;
-                toastError("Por favor, corrija os erros no formulário.");
+                toastError(t('contactFormPage.toastFormValidationError'));
             } else {
-                toastError("Ocorreu um erro interno salvar o contato.");
+                toastError(t('app.toastInternalError'));
             }
         } finally {
             loadingStop();

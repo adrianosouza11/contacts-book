@@ -53,7 +53,7 @@ export function fetchListContacts(page: number = 1) {
 
 export function fetchContactById(id: number) 
 {
-  return axios.get<ContactType|null>(apiUrl + `/contacts/${id}`,{
+  return axios.get<{ status: String, data: ContactType }>(apiUrl + `/contacts/${id}`,{
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'

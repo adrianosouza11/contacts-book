@@ -1,4 +1,7 @@
 {
+    "app": {
+        "toastInternalError": "Ocorreu um erro interno."
+    },
     "contactListPage": {
         "title": "Lista de Contatos",
         "addButton": "Adicionar",
@@ -27,6 +30,9 @@
         "breadcrumbs": {
             "contacts": "Voltar para lista de contatos"
         },
+        "toastStoreSuccessful": "Contato cadastrado com sucesso!",
+        "toastUpdateSuccessful": "Contato atualizado com sucesso!",
+        "toastFormValidationError": "Por favor, corrija os erros no formulário.",
         "form": {
             "titleAdd": "Dados de Contato e Endereço",
             "contactNameLabel": "Nome",

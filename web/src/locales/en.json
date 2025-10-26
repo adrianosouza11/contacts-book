@@ -1,4 +1,7 @@
 {
+    "app": {
+        "toastInternalError": "An internal error occurred"
+    },
     "contactListPage": {
         "title": "Contacts List",
         "addButton": "Add",
@@ -21,12 +24,16 @@
             "next": "Next",
             "pageInfo": "Page {current} of {total}",
             "linesTotal": "Total lines: {total}"
-        }
+        },
+        "toastDeletedSuccessful": "Contact successfully deleted"
     },
     "contactFormPage": {
         "breadcrumbs": {
             "contacts": "Back to contacts list"
         },
+        "toastStoreSuccessful": "Contact registration successful!",
+        "toastUpdateSuccessful": "Contact updated successfully!",
+        "toastFormValidationError": "Please correct any errors in the form.",
         "form": {
             "titleAdd": "Contact Data and Address",
             "contactNameLabel": "Name",

@@ -47,7 +47,7 @@
         </tr>
         </thead>
         <tbody class="text-gray-700">
-        <tr v-for="row in store.data" :key="row.id" class="hover:bg-gray-50">
+        <tr v-for="row in pagination.data" :key="row.id" class="hover:bg-gray-50">
           <td class="px-4 py-3 border-b">
             {{ row.id }}
           </td>
@@ -74,17 +74,17 @@
 
     <!-- Paginação -->
     <div class="flex flex-col md:flex-row items-center justify-between mt-6 text-sm text-gray-700">
-      <div class="flex items-center space-x-2" v-if="store.current_page">
-        <button @click="store.loadContacts(store.current_page - 1)" :disabled="store.current_page === 1" class="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100">{{ t('contactListPage.pagination.previous') }}</button>
+      <div class="flex items-center space-x-2" v-if="pagination.current_page">
+        <button @click="fetchData(pagination.current_page - 1)" :disabled="pagination.current_page === 1" class="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100">{{ t('contactListPage.pagination.previous') }}</button>
         <span>
-          {{ t('contactListPage.pagination.pageInfo', { current: store.current_page, total: store.last_page }) }} 
+          {{ t('contactListPage.pagination.pageInfo', { current: pagination.current_page, total: pagination.last_page }) }} 
          </span>
-        <button @click="store.loadContacts(store.current_page + 1)" :disabled="store.current_page === store.last_page" class="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100">
+        <button @click="fetchData(pagination.current_page + 1)" :disabled="pagination.current_page === pagination.last_page" class="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100">
           {{ t('contactListPage.pagination.next') }}
         </button>
       </div>
       <div class="mt-4 md:mt-0">
-        {{ t('contactListPage.pagination.linesTotal') }} <span class="font-semibold">{{ store.total }}</span>
+        {{ t('contactListPage.pagination.linesTotal') }} <span class="font-semibold">{{ pagination.total }}</span>
       </div>
     </div>
   </div>
@@ -93,20 +93,25 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue';
-  
-  import { formatToBR } from '@/utils/date';
-  import { PencilIcon, EraserIcon } from 'lucide-vue-next';
-  import { formattedPhone } from '@/utils/helpers';
-  import router from '@/router';
-  import { useContactListStore } from '@/stores/contactListStore';
-  import { useI18n } from 'vue-i18n';
-  import { useLanguageStore } from '@/stores/languageStore';
+import { onMounted } from 'vue';
 
-  const store = useContactListStore();
+import { formatToBR } from '@/utils/date';
+import { PencilIcon, EraserIcon } from 'lucide-vue-next';
+import { formattedPhone } from '@/utils/helpers';
+import router from '@/router';
+import { useI18n } from 'vue-i18n';
+import { useTableData } from '@/composables/useTableData';
+import { useLanguageStore } from '@/stores/languageStore';
+
+  const { 
+    pagination,
+    fetchData, 
+    deleteContactById,
+    downloadReport 
+  } =  useTableData();
 
   onMounted(() => {
-      store.loadContacts();
+      fetchData();
   });
 
   function handleEdit(rowId: number) {
@@ -114,11 +119,11 @@
   }
 
   function handleDelete(rowId: number) {
-    store.deleteContactById(rowId);
+    deleteContactById(rowId);
   }
 
   function onDownloadReport() {
-    store.downloadReport();
+    downloadReport();
   }
 
   const { t } = useI18n();
