@@ -9,28 +9,27 @@
           </a>
         </li>
         <li>
-          <a href="/contacts" class="text-blue-600 hover:text-blue-800">Voltar para lista de contatos</a>
+          <a href="/contacts" class="text-blue-600 hover:text-blue-800">{{ t('contactFormPage.breadcrumbs.contacts') }}</a>
         </li>
       </ol>
     </nav>
     <div class="flex items-center justify-center bg-gray-100">
       <div class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Dados de Contato e Endereço
+          {{ t('contactFormPage.form.titleAdd') }}
         </h2>
 
         <form class="space-y-5" @submit.prevent="handleSubmit">
           <!-- Nome -->
           <div>
             <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1">
-              Nome do Contato
+              {{ t('contactFormPage.form.contactNameLabel') }}
             </label>
             <input
               type="text"
               id="contact_name"
               name="contact_name"
               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Ex: João da Silva"
               required
               v-model="formData.contact_name"
             />
@@ -42,7 +41,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">
-                Telefone
+                {{ t('contactFormPage.form.contactPhoneLabel') }}
               </label>
               <input
                 type="tel"
@@ -59,7 +58,7 @@
 
             <div>
               <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1">
-                E-mail
+                {{ t('contactFormPage.form.contactEmailLabel') }}
               </label>
               <input
                 type="email"
@@ -78,14 +77,13 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                   <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-1">
-                    CEP
+                    {{ t('contactFormPage.form.postalcodeLabel') }}
                   </label>
                   <input
                     type="text"
                     id="postal_code"
                     name="postal_code"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="00000-000"
                     v-model="formData.postal_code"
                     v-maska="'#####-###'"
                     @blur="handleCepChange"
@@ -101,14 +99,13 @@
 
             <div class="">
               <label for="address" class="block text-sm font-medium text-gray-700 mb-1">
-                Endereço
+                {{ t('contactFormPage.form.addressLabel') }}
               </label>
               <input
                 type="text"
                 id="address"
                 name="address"
                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Rua Exemplo"
                 required
                 v-model="formData.address"
               />
@@ -122,14 +119,13 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="number" class="block text-sm font-medium text-gray-700 mb-1">
-                Número
+                {{ t('contactFormPage.form.numberLabel') }}
               </label>
               <input
                 type="text"
                 id="number"
                 name="number"
                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="123"
                 required
                 v-model="formData.number"
               />
@@ -138,14 +134,13 @@
 
             <div>
               <label for="neighborhood" class="block text-sm font-medium text-gray-700 mb-1">
-                Bairro
+                {{ t('contactFormPage.form.neighborhoodLabel') }}
               </label>
               <input
                 type="text"
                 id="neighborhood"
                 name="neighborhood"
                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Centro"
                 required
                 v-model="formData.neighborhood"
               />
@@ -159,14 +154,13 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
-                Cidade
+                {{ t('contactFormPage.form.cityLabel') }}
               </label>
               <input
                 type="text"
                 id="city"
                 name="city"
                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="São Paulo"
                 required
                 v-model="formData.city"
               />
@@ -175,10 +169,10 @@
 
             <div>
               <label for="state" class="block text-sm font-medium text-gray-700 mb-1">
-                Estado
+                {{ t('contactFormPage.form.stateLabel') }}
               </label>
               <select name="state" id="state" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" v-model="formData.state">
-                <option value="" disabled>Selecione uma opção</option>
+                <option value="" disabled>{{  t('contactFormPage.form.selectInput.defaultOption') }}</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>
                 <option value="AP">Amapá</option>
@@ -218,7 +212,7 @@
               type="submit"
               class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 font-medium"
             >
-              {{ isEditing ? 'Atualizar Contato' : 'Criar Contato' }}
+              {{ isEditing ? t('contactFormPage.form.saveEditButton') : t('contactFormPage.form.saveCreateButton') }}
             </button>
           </div>
         </form>
@@ -228,6 +222,8 @@
 
 <script setup lang="ts"> 
   import { useContactForm, type ContactFormType } from '@/composables/useContactForm';
+import { useLanguageStore } from '@/stores/languageStore';
+import { useI18n } from 'vue-i18n';
 
   const props = defineProps({
     initialValues: {
@@ -252,4 +248,8 @@
     handleSubmit, 
     isEditing, 
     submittedData, isSearchingCep, handleCepChange, formErrors } = useContactForm(props.initialValues);
+
+  const { t } = useI18n();
+  const languageStore = useLanguageStore();
+  languageStore.loadLanguage();
 </script>

@@ -1,0 +1,49 @@
+{
+    "contactListPage": {
+        "title": "Contacts List",
+        "addButton": "Add",
+        "exportButton": "Export to CSV",
+        "table": {
+            "thead": {
+                "contact_name": "Name",
+                "contact_email": "E-mail",
+                "contact_phone": "Phone",
+                "created_at": "Created at:",
+                "actions": "Actions"
+            },
+            "rows": {
+                "editTooltip": "Edit contact",
+                "deleteTooltip": "Delete contact"
+            }
+        },
+        "pagination": {
+            "previous": "Previous",
+            "next": "Next",
+            "pageInfo": "Page {current} of {total}",
+            "linesTotal": "Total lines: {total}"
+        }
+    },
+    "contactFormPage": {
+        "breadcrumbs": {
+            "contacts": "Back to contacts list"
+        },
+        "form": {
+            "titleAdd": "Contact Data and Address",
+            "contactNameLabel": "Name",
+            "contactEmailLabel": "E-mail",
+            "contactPhoneLabel": "Phone",
+            "addressLabel": "Street",
+            "numberLabel": "Number",
+            "neighborhoodLabel": "Neighborhood",
+            "cityLabel": "City",
+            "stateLabel": "State",
+            "postalcodeLabel": "Postal Code",
+            "saveCreateButton": "Create",
+            "saveEditButton": "Update",
+            "selectInput": {
+                "defaultOption": "Choose an option"
+            }
+        }
+    }
+    
+}
